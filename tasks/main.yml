@@ -1,0 +1,32 @@
+---
+- name: INSTALL | nftables
+  block:
+  - name: INSTALL | ensure nftables is installed via apt
+    ansible.builtin.apt:
+      pkg:
+        - nftables
+        - python3-nftables
+      state: present
+    become: true
+      #  - name: INSTALL | ensure nftables module is installed via pip
+      #    ansible.builtin.pip:
+      #      name:
+      #        - ansibleguy-nftables
+      #        - packaging
+      #      state: present
+  - name: INSTALL | ensure nftables starts on boot
+    ansible.builtin.service:
+      name: nftables.service
+      state: started
+      enabled: true
+    become: true
+  tags: install
+
+- name: CONFIGURE | nftables
+  block:
+  - name: CONFIGURE | test
+    ansibleguy.nftables.chain:
+      table: main
+      table_family: inet
+      name: test
+  tags: configure
